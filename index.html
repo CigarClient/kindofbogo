@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>Bogo Bogo Bogo Bogo Bogo Bogo</title>
+    <title>Bogo Bogo Bogo</title>
 </head>
 <body>
     <h1>Bogo</h1>
@@ -18,9 +18,9 @@
     <textarea id="textInput" placeholder="Enter numbers separated by commas"></textarea>
     <br>
     <button onclick="startSorting()">Start Sorting</button>
-    <div id="output">
-        <div id="attemptContainer" class="attempt-container"></div>
-    </div>
+    
+    <!-- Updated HTML structure to include a container for live updates -->
+    <div id="liveUpdates" class="live-updates"></div>
 
     <script>
         async function startSorting() {
@@ -30,14 +30,14 @@
             const fileInput = document.getElementById("fileInput");
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                readFile(file);
+                readFile(file, delay);
             } else {
                 const inputText = document.getElementById("textInput").value;
                 sendRequest(inputText, delay);
             }
         }
     
-        function readFile(file) {
+        function readFile(file, delay) {
             const reader = new FileReader();
             reader.onload = function (e) {
                 const inputText = e.target.result;
@@ -47,11 +47,10 @@
         }
     
         async function sendRequest(inputText, delay) {
-            const outputDiv = document.getElementById("output");
-            const attemptContainer = document.getElementById("attemptContainer");
+            const liveUpdatesDiv = document.getElementById("liveUpdates");
     
             // Clear previous content
-            attemptContainer.innerHTML = '';
+            liveUpdatesDiv.innerHTML = '';
     
             fetch(`/sort?delay=${delay}`, {
                 method: 'POST',
@@ -62,18 +61,15 @@
             })
             .then(response => response.json())
             .then(async data => {
-                // Display information for each attempt in the same box
+                // Display information for each attempt dynamically
                 for (let i = 0; i < data.attempts; i++) {
-                    const attemptBox = document.createElement('div');
-                    attemptBox.className = 'attempt-box';
-                    attemptBox.innerHTML = `<p>Attempt ${i + 1}</p>`;
-                    attemptBox.innerHTML += `<p>Randomized List: ${data.randomized_lists[i]}</p>`;
-                    attemptBox.innerHTML += `<p>Is List in Order: ${data.is_in_order[i]}</p>`;
-                    attemptContainer.appendChild(attemptBox);
+                    liveUpdatesDiv.innerHTML += `<p>Attempt ${i + 1}</p>`;
+                    liveUpdatesDiv.innerHTML += `<p>Randomized List: ${data.randomized_lists[i]}</p>`;
+                    liveUpdatesDiv.innerHTML += `<p>Is List in Order: ${data.is_in_order[i]}</p>`;
     
-                    // Scroll to the bottom of the attempt container
-                    attemptContainer.scrollTop = attemptContainer.scrollHeight;
-                    
+                    // Scroll to the bottom of the live updates container
+                    liveUpdatesDiv.scrollTop = liveUpdatesDiv.scrollHeight;
+    
                     // Delay for the specified time before the next attempt
                     if (i < data.attempts - 1) {
                         await new Promise(resolve => setTimeout(resolve, delay));
@@ -81,13 +77,10 @@
                 }
     
                 // Display final sorted list
-                const finalBox = document.createElement('div');
-                finalBox.className = 'final-box';
-                finalBox.innerHTML = `<p>Final Sorted List: ${data.sorted_list}</p>`;
-                attemptContainer.appendChild(finalBox);
+                liveUpdatesDiv.innerHTML += `<p>Final Sorted List: ${data.sorted_list}</p>`;
     
-                // Scroll to the bottom of the attempt container after the final result
-                attemptContainer.scrollTop = attemptContainer.scrollHeight;
+                // Scroll to the bottom of the live updates container after the final result
+                liveUpdatesDiv.scrollTop = liveUpdatesDiv.scrollHeight;
             })
             .catch(error => {
                 console.error('Error:', error);
