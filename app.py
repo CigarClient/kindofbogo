@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import random
 import time
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.')
 
 def is_list_in_order(lst):
     for i in range(len(lst) - 1):
@@ -33,7 +33,7 @@ def sort_numbers(numbers, delay):
     return result
 
 @app.route('/')
-def index():
+def home():
     return render_template('index.html')
 
 @app.route('/sort', methods=['POST'])
