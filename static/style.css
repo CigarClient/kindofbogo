@@ -1,0 +1,56 @@
+/* Inside style.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    color: #333;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input, textarea {
+    margin-bottom: 10px;
+    width: 100%; /* Make the input numbers box 100% width */
+}
+
+button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#output {
+    margin-top: 20px;
+}
+
+.attempt-container {
+    max-height: 300px; /* Set a maximum height for the attempt container */
+    overflow-y: auto; /* Enable vertical scrolling if the content exceeds the height */
+}
+
+.attempt-box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.final-box {
+    border: 1px solid #0f0;
+    padding: 10px;
+    margin-top: 10px;
+}

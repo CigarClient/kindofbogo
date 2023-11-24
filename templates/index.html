@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Bogo Bogo Bogo</title>
+</head>
+<body>
+    <h1>Bogo</h1>
+    <label for="delayInput">Delay (ms):</label>
+    <input type="number" id="delayInput" value="500">
+    <br>
+    <label for="fileInput">Import Numbers from File:</label>
+    <input type="file" id="fileInput" accept=".txt">
+    <br>
+    <label for="textInput">Input Numbers:</label>
+    <textarea id="textInput" placeholder="Enter numbers separated by commas"></textarea>
+    <br>
+    <button onclick="startSorting()">Start Sorting</button>
+    <div id="output">
+        <div id="attemptContainer" class="attempt-container"></div>
+    </div>
+
+    <script>
+        async function startSorting() {
+            const delay = document.getElementById("delayInput").value;
+    
+            // Check if a file is selected
+            const fileInput = document.getElementById("fileInput");
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                readFile(file);
+            } else {
+                const inputText = document.getElementById("textInput").value;
+                sendRequest(inputText, delay);
+            }
+        }
+    
+        function readFile(file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const inputText = e.target.result;
+                sendRequest(inputText, delay);
+            };
+            reader.readAsText(file);
+        }
+    
+        async function sendRequest(inputText, delay) {
+            const outputDiv = document.getElementById("output");
+            const attemptContainer = document.getElementById("attemptContainer");
+    
+            // Clear previous content
+            attemptContainer.innerHTML = '';
+    
+            fetch(`/sort?delay=${delay}`, {
+                method: 'POST',
+                body: inputText,
+                headers: {
+                    'Content-Type': 'text/plain'
+                }
+            })
+            .then(response => response.json())
+            .then(async data => {
+                // Display information for each attempt in the same box
+                for (let i = 0; i < data.attempts; i++) {
+                    const attemptBox = document.createElement('div');
+                    attemptBox.className = 'attempt-box';
+                    attemptBox.innerHTML = `<p>Attempt ${i + 1}</p>`;
+                    attemptBox.innerHTML += `<p>Randomized List: ${data.randomized_lists[i]}</p>`;
+                    attemptBox.innerHTML += `<p>Is List in Order: ${data.is_in_order[i]}</p>`;
+                    attemptContainer.appendChild(attemptBox);
+    
+                    // Scroll to the bottom of the attempt container
+                    attemptContainer.scrollTop = attemptContainer.scrollHeight;
+                    
+                    // Delay for the specified time before the next attempt
+                    if (i < data.attempts - 1) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                }
+    
+                // Display final sorted list
+                const finalBox = document.createElement('div');
+                finalBox.className = 'final-box';
+                finalBox.innerHTML = `<p>Final Sorted List: ${data.sorted_list}</p>`;
+                attemptContainer.appendChild(finalBox);
+    
+                // Scroll to the bottom of the attempt container after the final result
+                attemptContainer.scrollTop = attemptContainer.scrollHeight;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
