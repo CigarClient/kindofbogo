@@ -19,8 +19,11 @@
     <br>
     <button onclick="startSorting()">Start Sorting</button>
     
-    <!-- Updated HTML structure to include a container for live updates -->
-    <div id="liveUpdates" class="live-updates"></div>
+    <!-- Updated HTML structure to include a scrollable box for live updates -->
+    <div id="liveUpdatesContainer" class="live-updates-container">
+        <h2>Live Updates</h2>
+        <div id="liveUpdates" class="live-updates"></div>
+    </div>
 
     <script>
         async function startSorting() {
@@ -48,9 +51,13 @@
     
         async function sendRequest(inputText, delay) {
             const liveUpdatesDiv = document.getElementById("liveUpdates");
+            const liveUpdatesContainer = document.getElementById("liveUpdatesContainer");
     
             // Clear previous content
             liveUpdatesDiv.innerHTML = '';
+    
+            // Display title for live updates
+            liveUpdatesDiv.innerHTML += '<h3>Sorting in Progress...</h3>';
     
             fetch(`/sort?delay=${delay}`, {
                 method: 'POST',
@@ -81,6 +88,11 @@
     
                 // Scroll to the bottom of the live updates container after the final result
                 liveUpdatesDiv.scrollTop = liveUpdatesDiv.scrollHeight;
+    
+                // Set a fixed height for the live updates container
+                liveUpdatesContainer.style.height = '300px';
+                // Enable overflow-y for scrolling
+                liveUpdatesContainer.style.overflowY = 'scroll';
             })
             .catch(error => {
                 console.error('Error:', error);
