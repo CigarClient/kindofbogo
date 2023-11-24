@@ -70,9 +70,14 @@
             .then(async data => {
                 // Display information for each attempt dynamically
                 for (let i = 0; i < data.attempts; i++) {
-                    liveUpdatesDiv.innerHTML += `<p>Attempt ${i + 1}</p>`;
-                    liveUpdatesDiv.innerHTML += `<p>Randomized List: ${data.randomized_lists[i]}</p>`;
-                    liveUpdatesDiv.innerHTML += `<p>Is List in Order: ${data.is_in_order[i]}</p>`;
+                    const attemptBox = document.createElement('div');
+                    attemptBox.className = 'attempt-box';
+                    attemptBox.innerHTML += `<p>Attempt ${i + 1}</p>`;
+                    attemptBox.innerHTML += `<p>Randomized List: ${data.randomized_lists[i]}</p>`;
+                    attemptBox.innerHTML += `<p>Is List in Order: ${data.is_in_order[i]}</p>`;
+    
+                    // Append the attempt box to the live updates container
+                    liveUpdatesDiv.appendChild(attemptBox);
     
                     // Scroll to the bottom of the live updates container
                     liveUpdatesDiv.scrollTop = liveUpdatesDiv.scrollHeight;
@@ -84,7 +89,10 @@
                 }
     
                 // Display final sorted list
-                liveUpdatesDiv.innerHTML += `<p>Final Sorted List: ${data.sorted_list}</p>`;
+                const finalBox = document.createElement('div');
+                finalBox.className = 'final-box';
+                finalBox.innerHTML = `<p>Final Sorted List: ${data.sorted_list}</p>`;
+                liveUpdatesDiv.appendChild(finalBox);
     
                 // Scroll to the bottom of the live updates container after the final result
                 liveUpdatesDiv.scrollTop = liveUpdatesDiv.scrollHeight;
@@ -99,5 +107,6 @@
             });
         }
     </script>
+    
 </body>
 </html>
