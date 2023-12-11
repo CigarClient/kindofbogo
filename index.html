@@ -25,9 +25,9 @@
         <div id="liveUpdates" class="live-updates"></div>
     </div>
 
-    <!-- Add the video element with controls -->
+    <!-- Add the video element with controls using a relative path -->
     <video controls width="400">
-        <source src="{{ url_for('static', filename='tang.mp4') }}" type="video/mp4">
+        <source src="tang.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
@@ -113,6 +113,5 @@
             });
         }
     </script>
-    
 </body>
 </html>
