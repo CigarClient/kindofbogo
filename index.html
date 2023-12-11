@@ -25,6 +25,12 @@
         <div id="liveUpdates" class="live-updates"></div>
     </div>
 
+    <!-- Add the video element with controls -->
+    <video controls width="400">
+        <source src="{{ url_for('static', filename='tang.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
     <script>
         async function startSorting() {
             const delay = document.getElementById("delayInput").value;
